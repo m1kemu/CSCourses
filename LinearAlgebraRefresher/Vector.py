@@ -128,6 +128,7 @@ class Vector(object):
 
     def orthogonal(self, v1, v2):
         tolerance = 1e-10
+        
         if abs(v1.dot_product(v1, v2)) < tolerance:
             return True
         else:
@@ -178,22 +179,50 @@ class Vector(object):
         return [proj, orth]
 
 
+    def cross_product(self, v1, v2):
+        coords = []
+
+        v1_coords = v1.coordinates
+        v2_coords = v2.coordinates
+
+        if len(v1_coords) != len(v2_coords):
+            print(f'Cannot find the Cross Product of Vectors of different sizes')
+            return None
+
+        v1_list = []
+        v2_list = []
+
+        for i in range(0, 2):
+            for j, k in zip(v1_coords, v2_coords):
+                v1_list.append(j)
+                v2_list.append(k)
+
+        del(v1_list[0])
+        del(v1_list[-1])
+        del(v2_list[0])
+        del(v2_list[-1])
+
+        for i in range(len(v1_list) - 1):
+            coord = (v1_list[i] * v2_list[i+1]) - (v1_list[i+1] * v2_list[i])
+            coords.append(coord)
+
+        return Vector(tuple(coords))
+
+
+    def area_parallelogram(self, v1):
+        return v1.magnitude()
+
+
+    def area_triangle(self, v1):
+        mag = v1.magnitude()
+
+        return (mag / 2)
+
+
 def main():
 
-    v = Vector((3.009, -6.172, 3.692, -2.51))
-    b = Vector((6.404, -9.144, 2.759, 8.718))
-
-    proj = v.projection(v, b)
-
-    print(f'Projection of {str(v.coordinates)} onto {str(b.coordinates)} is: {str(proj.coordinates)}')
-
-    orth = v.orth_component(v, b)
-
-    print(f'Orthogonal component of {str(v.coordinates)} onto {str(b.coordinates)} is: {str(orth.coordinates)}')
-
-    composition = v.decompose(v, b)
-
-    print(f'Decomposition of {str(v.coordinates)} is: {str(composition[0])} and {str(composition[1])}')
+    v1 = Vector((1.5, 9.547, 3.691))
+    v2 = Vector((-6.007, 0.124, 5.772))
 
 
 if __name__ == '__main__':
