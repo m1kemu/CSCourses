@@ -56,7 +56,7 @@ class Vector(object):
     def is_zero(self):
         tolerance = 1e-10
 
-        return self.magnitude < tolerance
+        return self.magnitude() < tolerance
 
 
     def dot_product(self, v1, v2):
@@ -94,8 +94,9 @@ class Vector(object):
         tolerance = 1e-10
         parallel = False
         scalar_multiple = 0
+        scalar_multiples = []
 
-        if v1.is_zero or v2.is_zero:
+        if v1.is_zero() or v2.is_zero():
             parallel = True
             return (parallel,scalar_multiple)
 
@@ -104,31 +105,38 @@ class Vector(object):
             j = abs(j)
 
             if i > j:
-                if (i % j).is_integer():
+                if float(i / j).is_integer():
                     parallel = True
                     scalar_multiple = i / j
+                    scalar_multiples.append(scalar_multiple)
                 else:
                     parallel = False
                     break
 
             elif j > i:
-                if (j % i).is_integer:
+                if float(j / i).is_integer():
                     parallel = True
                     scalar_multiple = j / i
+                    scalar_multiples.append(scalar_multiple)
                 else:
                     parallel = False
                     break
 
             else:
                 parallel = True
-                scalar_multiple = 1
+                scalar_multiples.append(1)
+
+        if scalar_multiples.count(scalar_multiples[0]) == len(scalar_multiples):
+            parallel = True
+        else:
+            parallel = False
 
         return (parallel,scalar_multiple)
 
 
     def orthogonal(self, v1, v2):
         tolerance = 1e-10
-        
+
         if abs(v1.dot_product(v1, v2)) < tolerance:
             return True
         else:
@@ -221,8 +229,10 @@ class Vector(object):
 
 def main():
 
-    v1 = Vector((1.5, 9.547, 3.691))
-    v2 = Vector((-6.007, 0.124, 5.772))
+    v1 = Vector((1, -3))
+    v2 = Vector((2, -6))
+
+    print(str(v1.parallel(v1, v2)))
 
 
 if __name__ == '__main__':
